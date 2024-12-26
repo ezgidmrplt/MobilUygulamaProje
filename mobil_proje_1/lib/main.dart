@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'anasayfa.dart'; // Giriş ekranı dosyasını çağırıyoruz
 
+
 void main() {
   runApp(ToplantiUygulamasi());
 }

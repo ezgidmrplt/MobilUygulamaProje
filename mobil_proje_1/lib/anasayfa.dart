@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'anaekran.dart'; // Anaekran dosyasını dahil ediyoruz.
 
 class GirisEkrani extends StatefulWidget {
   @override
@@ -14,6 +15,9 @@ class _GirisEkraniState extends State<GirisEkrani> with TickerProviderStateMixin
   late List<AnimationController> _letterControllers;
   late List<Animation<double>> _letterAnimations;
   late List<String> _titleText;
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -77,16 +81,32 @@ class _GirisEkraniState extends State<GirisEkrani> with TickerProviderStateMixin
     _slideController.dispose();
     _scaleController.dispose();
     _colorController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
     for (var controller in _letterControllers) {
       controller.dispose();
     }
     super.dispose();
   }
 
+  void _login() {
+    if (_usernameController.text == 'ezgi' &&
+        _passwordController.text == '1234') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const BoardScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Kullanıcı adı veya şifre hatalı!')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFD4F6FF),  // Yeni arka plan rengi
+      backgroundColor: Color(0xFFD4F6FF),
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -135,6 +155,7 @@ class _GirisEkraniState extends State<GirisEkrani> with TickerProviderStateMixin
               child: Column(
                 children: [
                   TextField(
+                    controller: _usernameController,
                     decoration: InputDecoration(
                       labelText: 'Kullanıcı Adı',
                       border: OutlineInputBorder(),
@@ -149,6 +170,7 @@ class _GirisEkraniState extends State<GirisEkrani> with TickerProviderStateMixin
                   ),
                   SizedBox(height: 16),
                   TextField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Şifre',
@@ -171,22 +193,12 @@ class _GirisEkraniState extends State<GirisEkrani> with TickerProviderStateMixin
                 parent: _scaleController,
                 curve: Curves.easeOut,
               ),
-              child: AnimatedBuilder(
-                animation: _colorController,
-                builder: (context, child) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      print('Giriş Yapıldı!');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorTween(
-                        begin: Color(0xFFAE445A),
-                        end: Color(0xFF9C3A50),
-                      ).animate(_colorController).value,
-                    ),
-                    child: Text('Giriş Yap'),
-                  );
-                },
+              child: ElevatedButton(
+                onPressed: _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFAE445A),
+                ),
+                child: Text('Giriş Yap'),
               ),
             ),
           ],
