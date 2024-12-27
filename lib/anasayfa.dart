@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'anaekran.dart'; // Anaekran dosyasını dahil ediyoruz.
 
@@ -18,6 +19,8 @@ class _GirisEkraniState extends State<GirisEkrani> with TickerProviderStateMixin
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -89,14 +92,19 @@ class _GirisEkraniState extends State<GirisEkrani> with TickerProviderStateMixin
     super.dispose();
   }
 
-  void _login() {
-    if (_usernameController.text == 'ezgi' &&
-        _passwordController.text == '1234') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const BoardScreen()),
+  Future<void> _login() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _usernameController.text.trim(),
+        password: _passwordController.text.trim(),
       );
-    } else {
+      if (userCredential.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BoardScreen()),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Kullanıcı adı veya şifre hatalı!')),
       );
