@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "911733523727",
+    "project_id": "workagendafinalproje",
+    "storage_bucket": "workagendafinalproje.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911733523727:android:c19e07d4386b91d0412a7a",
+        "android_client_info": {
+          "package_name": "com.example.mobil_proje_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8IdS4PBKNprdeOx03OP7wh5LYTMtQ9OI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
