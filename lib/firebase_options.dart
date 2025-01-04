@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '911733523727',
     projectId: 'workagendafinalproje',
     authDomain: 'workagendafinalproje.firebaseapp.com',
+    databaseURL: 'https://workagendafinalproje-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'workagendafinalproje.firebasestorage.app',
   );
 
@@ -54,6 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:911733523727:android:c19e07d4386b91d0412a7a',
     messagingSenderId: '911733523727',
     projectId: 'workagendafinalproje',
+    databaseURL: 'https://workagendafinalproje-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'workagendafinalproje.firebasestorage.app',
   );
 
@@ -62,6 +64,7 @@ class DefaultFirebaseOptions {
     appId: '1:911733523727:ios:30173f09945bf96c412a7a',
     messagingSenderId: '911733523727',
     projectId: 'workagendafinalproje',
+    databaseURL: 'https://workagendafinalproje-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'workagendafinalproje.firebasestorage.app',
     iosBundleId: 'com.example.mobilProje1',
   );
@@ -71,6 +74,7 @@ class DefaultFirebaseOptions {
     appId: '1:911733523727:ios:30173f09945bf96c412a7a',
     messagingSenderId: '911733523727',
     projectId: 'workagendafinalproje',
+    databaseURL: 'https://workagendafinalproje-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'workagendafinalproje.firebasestorage.app',
     iosBundleId: 'com.example.mobilProje1',
   );
@@ -81,6 +85,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '911733523727',
     projectId: 'workagendafinalproje',
     authDomain: 'workagendafinalproje.firebaseapp.com',
+    databaseURL: 'https://workagendafinalproje-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'workagendafinalproje.firebasestorage.app',
   );
+
 }

@@ -4,6 +4,8 @@ import 'package:mobil_proje_1/firebase_options.dart';
 import 'anasayfa.dart'; // Giriş ekranı dosyasını çağırıyoruz
 
 
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
