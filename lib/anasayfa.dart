@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Google Fonts paketini ekledik.
 import 'anaekran.dart'; // Anaekran dosyasını dahil ediyoruz.
 
 class GirisEkrani extends StatefulWidget {
@@ -7,16 +8,64 @@ class GirisEkrani extends StatefulWidget {
   _GirisEkraniState createState() => _GirisEkraniState();
 }
 
-class _GirisEkraniState extends State<GirisEkrani> {
+class _GirisEkraniState extends State<GirisEkrani>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  late AnimationController _animationController;
+  late Animation<Color?> _usernameBackgroundAnimation;
+  late Animation<Color?> _passwordBackgroundAnimation;
+  late FocusNode _usernameFocusNode;
+  late FocusNode _passwordFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameFocusNode = FocusNode();
+    _passwordFocusNode = FocusNode();
+
+    _animationController = AnimationController(
+      duration: Duration(seconds: 1),
+      vsync: this,
+    );
+
+    _usernameBackgroundAnimation = ColorTween(
+      begin: Color(0xFFFFEBEE), // Açık pembe
+      end: Color(0xFFFFCDD2), // Daha koyu açık pembe
+    ).animate(_animationController);
+
+    _passwordBackgroundAnimation = ColorTween(
+      begin: Color(0xFFFFEBEE), // Açık pembe
+      end: Color(0xFFFFCDD2), // Daha koyu açık pembe
+    ).animate(_animationController);
+
+    _usernameFocusNode.addListener(() {
+      if (_usernameFocusNode.hasFocus) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+
+    _passwordFocusNode.addListener(() {
+      if (_passwordFocusNode.hasFocus) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _animationController.dispose();
+    _usernameFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -42,60 +91,118 @@ class _GirisEkraniState extends State<GirisEkrani> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFD4F6FF),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/avatar.png',
-              width: 250,
-              height: 250,
-              fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          // Arka plan görseli
+          Positioned.fill(
+            child: Image.asset(
+              'assets/gorsel.png',
+              fit: BoxFit.cover, // Görselin ekranı kaplamasını sağlar
             ),
-            SizedBox(height: 24),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Kullanıcı Adı',
-                border: OutlineInputBorder(),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFAE445A), width: 2.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFAE445A), width: 1.0),
-                ),
-                prefixIcon: Icon(Icons.person),
+          ),
+          // Transparan pembe arka plan ekliyoruz
+          Positioned.fill(
+            child: Container(
+              color: Color(0xA8FFCDD2), // Çok açık pembe rengi ve opaklık
+            ),
+          ),
+          // Ön plan içerikleri
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, // Dikeyde ortalama
+                crossAxisAlignment: CrossAxisAlignment.center, // Yatayda ortalama
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Text(
+                      'WorkAgenda',
+                      style: GoogleFonts.lobster(
+                        textStyle: TextStyle(
+                          fontSize: 55,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                  AnimatedBuilder(
+                    animation: _usernameBackgroundAnimation,
+                    builder: (context, child) {
+                      return TextField(
+                        focusNode: _usernameFocusNode,
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: _usernameBackgroundAnimation.value,
+                          labelText: 'Kullanıcı Adı',
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: _usernameBackgroundAnimation.value!,
+                                width: 2.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white, width: 1.0),
+                          ),
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  AnimatedBuilder(
+                    animation: _passwordBackgroundAnimation,
+                    builder: (context, child) {
+                      return TextField(
+                        focusNode: _passwordFocusNode,
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: _passwordBackgroundAnimation.value,
+                          labelText: 'Şifre',
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: _passwordBackgroundAnimation.value!,
+                                width: 2.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white, width: 1.0),
+                          ),
+                          prefixIcon: Icon(Icons.lock),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _login,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFFFCDD2), // Açık pembe
+                      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 3,
+                    ),
+                    child: Text(
+                      'Giriş Yap',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Şifre',
-                border: OutlineInputBorder(),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFAE445A), width: 2.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFAE445A), width: 1.0),
-                ),
-                prefixIcon: Icon(Icons.lock),
-              ),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFAE445A),
-              ),
-              child: Text('Giriş Yap'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
