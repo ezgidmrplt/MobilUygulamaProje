@@ -1,27 +1,44 @@
 import 'package:flutter/material.dart';
 
-class BoardScreen extends StatelessWidget {
+class BoardScreen extends StatefulWidget {
   const BoardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> groups = [
-      {
-        'title': 'Grup 1',
-        'tasks': [
-          {'task': 'Görev 1', 'dueDate': '12/01/2025'},
-          {'task': 'Görev 2', 'dueDate': '15/01/2025'},
-        ],
-      },
-      {
-        'title': 'Grup 2',
-        'tasks': [
-          {'task': 'Görev 1', 'dueDate': '13/01/2025'},
-          {'task': 'Görev 2', 'dueDate': '18/01/2025'},
-        ],
-      },
-    ];
+  _BoardScreenState createState() => _BoardScreenState();
+}
 
+class _BoardScreenState extends State<BoardScreen> {
+  final List<Map<String, dynamic>> groups = [
+    {
+      'title': 'Grup 1',
+      'tasks': [
+        {'task': 'Görev 1', 'dueDate': '12/01/2025', 'isCompleted': false},
+        {'task': 'Görev 2', 'dueDate': '15/01/2025', 'isCompleted': false},
+      ],
+    },
+    {
+      'title': 'Grup 2',
+      'tasks': [
+        {'task': 'Görev 1', 'dueDate': '13/01/2025', 'isCompleted': false},
+        {'task': 'Görev 2', 'dueDate': '18/01/2025', 'isCompleted': false},
+      ],
+    },
+  ];
+
+  void _updateTaskCompletion(int groupIndex, int taskIndex, bool value) {
+    setState(() {
+      groups[groupIndex]['tasks'][taskIndex]['isCompleted'] = value;
+    });
+  }
+
+  double _calculateProgress(int groupIndex) {
+    final tasks = groups[groupIndex]['tasks'];
+    final completedTasks = tasks.where((task) => task['isCompleted'] == true).length;
+    return completedTasks / tasks.length;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panolarınız'),
@@ -33,6 +50,8 @@ class BoardScreen extends StatelessWidget {
           itemCount: groups.length,
           itemBuilder: (context, groupIndex) {
             final group = groups[groupIndex];
+            final progress = _calculateProgress(groupIndex);
+
             return Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -57,7 +76,15 @@ class BoardScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10),
+                    // İlerleme barı
+                    LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: Colors.grey[300],
+                      color: Color(0xFFAE445A), // Same as app bar color
+                    ),
+                    SizedBox(height: 10),
                     ...group['tasks'].map<Widget>((task) {
+                      final taskIndex = group['tasks'].indexOf(task);
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Container(
@@ -97,8 +124,12 @@ class BoardScreen extends StatelessWidget {
                                 ],
                               ),
                               Checkbox(
-                                value: false, // Task completion state
-                                onChanged: (bool? value) {},
+                                value: task['isCompleted'] ?? false, // Handling null values
+                                onChanged: (bool? value) {
+                                  if (value != null) {
+                                    _updateTaskCompletion(groupIndex, taskIndex, value);
+                                  }
+                                },
                                 activeColor: Color(0xFFAE445A), // Same as app bar color
                               ),
                             ],
