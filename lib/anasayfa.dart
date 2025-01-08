@@ -115,7 +115,7 @@ class _GirisEkraniState extends State<GirisEkrani>
                 crossAxisAlignment: CrossAxisAlignment.center, // Yatayda ortalama
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 1),
+                    padding: const EdgeInsets.only(top: 40),
                     child: Text(
                       'WorkAgenda',
                       style: GoogleFonts.lobster(
@@ -127,7 +127,22 @@ class _GirisEkraniState extends State<GirisEkrani>
                       ),
                     ),
                   ),
-                  SizedBox(height: 50),
+                  SizedBox(height: 20), // Aradaki boşluğu azalttık
+                  // Resme zoom efekti ekliyoruz
+                  ClipRect(
+                    child: Align(
+                      alignment: Alignment(0.0, 0.4), // Y eksenini daha fazla kaydırdık
+                      heightFactor: 2, // Resmin yukarıdan aşağıya büyütülmesi
+                      child: Transform.scale(
+                        scale: 3.0, // Resmi daha fazla büyütüyoruz
+                        child: Image.asset(
+                          'assets/logogibi.png', // Resim dosyasının yolu
+                          height: 150, // Resmin boyutu
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30), // Resim ile giriş formu arasındaki boşluk
                   AnimatedBuilder(
                     animation: _usernameBackgroundAnimation,
                     builder: (context, child) {
@@ -152,7 +167,7 @@ class _GirisEkraniState extends State<GirisEkrani>
                       );
                     },
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 8), // Kullanıcı adı ile şifre arasındaki boşluğu azalttık
                   AnimatedBuilder(
                     animation: _passwordBackgroundAnimation,
                     builder: (context, child) {
@@ -178,7 +193,7 @@ class _GirisEkraniState extends State<GirisEkrani>
                       );
                     },
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 16), // Şifre ile buton arasındaki boşluğu azalttık
                   ElevatedButton(
                     onPressed: _login,
                     style: ElevatedButton.styleFrom(

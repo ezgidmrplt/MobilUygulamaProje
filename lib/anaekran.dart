@@ -5,65 +5,112 @@ class BoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> boards = [
-      {'title': 'Ekipler', 'description': 'Takım çalışmaları ve iş birliği'},
-      {'title': 'Toplantılar', 'description': 'Günlük ve haftalık toplantılar'},
+    final List<Map<String, dynamic>> groups = [
+      {
+        'title': 'Grup 1',
+        'tasks': [
+          {'task': 'Görev 1', 'dueDate': '12/01/2025'},
+          {'task': 'Görev 2', 'dueDate': '15/01/2025'},
+        ],
+      },
+      {
+        'title': 'Grup 2',
+        'tasks': [
+          {'task': 'Görev 1', 'dueDate': '13/01/2025'},
+          {'task': 'Görev 2', 'dueDate': '18/01/2025'},
+        ],
+      },
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panolarınız'),
-        backgroundColor: const Color(0xFFAE445A),
+        backgroundColor: const Color(0xFFAE445A), // Same as login screen
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: boards.map((board) {
-            return GestureDetector(
-              onTap: () {
-                // İlgili pano detaylarına gitmek için kod yazılabilir
-              },
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
+        child: ListView.builder(
+          itemCount: groups.length,
+          itemBuilder: (context, groupIndex) {
+            final group = groups[groupIndex];
+            return Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
+                  color: Color(0xFFFFCDD2), // Light pink background
                 ),
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.lightBlueAccent,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        board['title']!,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      group['title'],
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        board['description']!,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
+                    ),
+                    SizedBox(height: 10),
+                    ...group['tasks'].map<Widget>((task) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                offset: Offset(0, 3),
+                                blurRadius: 6,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    task['task'],
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'Bitiş Tarihi: ${task['dueDate']}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Checkbox(
+                                value: false, // Task completion state
+                                onChanged: (bool? value) {},
+                                activeColor: Color(0xFFAE445A), // Same as app bar color
+                              ),
+                            ],
+                          ),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                      );
+                    }).toList(),
+                  ],
                 ),
               ),
             );
-          }).toList(),
+          },
         ),
       ),
     );
