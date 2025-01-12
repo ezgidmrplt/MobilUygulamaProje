@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Google Fonts paketini ekledik.
+import 'package:google_fonts/google_fonts.dart';
+import 'admin.dart'; // Admin ekranı için import.
 import 'anaekran.dart'; // Anaekran dosyasını dahil ediyoruz.
 
 class GirisEkrani extends StatefulWidget {
@@ -33,13 +34,13 @@ class _GirisEkraniState extends State<GirisEkrani>
     );
 
     _usernameBackgroundAnimation = ColorTween(
-      begin: Color(0xFFFFEBEE), // Açık pembe
-      end: Color(0xFFFFCDD2), // Daha koyu açık pembe
+      begin: Color(0xFFFFEBEE),
+      end: Color(0xFFFFCDD2),
     ).animate(_animationController);
 
     _passwordBackgroundAnimation = ColorTween(
-      begin: Color(0xFFFFEBEE), // Açık pembe
-      end: Color(0xFFFFCDD2), // Daha koyu açık pembe
+      begin: Color(0xFFFFEBEE),
+      end: Color(0xFFFFCDD2),
     ).animate(_animationController);
 
     _usernameFocusNode.addListener(() {
@@ -76,10 +77,19 @@ class _GirisEkraniState extends State<GirisEkrani>
         password: _passwordController.text.trim(),
       );
       if (userCredential.user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const BoardScreen()),
-        );
+        // Eğer admin ise admin ekranına yönlendir.
+        if (userCredential.user!.email == "admin@gmail.com") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => AdminScreen()),
+          );
+        } else {
+          // Diğer kullanıcılar için ana ekrana yönlendir.
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -93,26 +103,23 @@ class _GirisEkraniState extends State<GirisEkrani>
     return Scaffold(
       body: Stack(
         children: [
-          // Arka plan görseli
           Positioned.fill(
             child: Image.asset(
               'assets/gorsel.png',
-              fit: BoxFit.cover, // Görselin ekranı kaplamasını sağlar
+              fit: BoxFit.cover,
             ),
           ),
-          // Transparan pembe arka plan ekliyoruz
           Positioned.fill(
             child: Container(
-              color: Color(0xA8FFCDD2), // Çok açık pembe rengi ve opaklık
+              color: Color(0xA8FFCDD2),
             ),
           ),
-          // Ön plan içerikleri
           Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Dikeyde ortalama
-                crossAxisAlignment: CrossAxisAlignment.center, // Yatayda ortalama
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 40),
@@ -127,22 +134,21 @@ class _GirisEkraniState extends State<GirisEkrani>
                       ),
                     ),
                   ),
-                  SizedBox(height: 20), // Aradaki boşluğu azalttık
-                  // Resme zoom efekti ekliyoruz
+                  SizedBox(height: 20),
                   ClipRect(
                     child: Align(
-                      alignment: Alignment(0.0, 0.4), // Y eksenini daha fazla kaydırdık
-                      heightFactor: 2, // Resmin yukarıdan aşağıya büyütülmesi
+                      alignment: Alignment(0.0, 0.4),
+                      heightFactor: 2,
                       child: Transform.scale(
-                        scale: 3.0, // Resmi daha fazla büyütüyoruz
+                        scale: 3.0,
                         child: Image.asset(
-                          'assets/logogibi.png', // Resim dosyasının yolu
-                          height: 150, // Resmin boyutu
+                          'assets/logogibi.png',
+                          height: 150,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 30), // Resim ile giriş formu arasındaki boşluk
+                  SizedBox(height: 30),
                   AnimatedBuilder(
                     animation: _usernameBackgroundAnimation,
                     builder: (context, child) {
@@ -167,7 +173,7 @@ class _GirisEkraniState extends State<GirisEkrani>
                       );
                     },
                   ),
-                  SizedBox(height: 8), // Kullanıcı adı ile şifre arasındaki boşluğu azalttık
+                  SizedBox(height: 8),
                   AnimatedBuilder(
                     animation: _passwordBackgroundAnimation,
                     builder: (context, child) {
@@ -193,11 +199,11 @@ class _GirisEkraniState extends State<GirisEkrani>
                       );
                     },
                   ),
-                  SizedBox(height: 16), // Şifre ile buton arasındaki boşluğu azalttık
+                  SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFFCDD2), // Açık pembe
+                      backgroundColor: Color(0xFFFFCDD2),
                       padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
