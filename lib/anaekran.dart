@@ -8,23 +8,32 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Home Screen"),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) return CircularProgressIndicator();
-          return ListView(
-            children: snapshot.data!.docs.map((doc) {
-              return ListTile(
-                title: Text(doc['task']),
-                subtitle: Text(doc['deliveryDate'].toDate().toString()),
-                trailing: Icon(
-                  doc['isCompleted'] ? Icons.check_circle : Icons.circle_outlined,
-                  color: doc['isCompleted'] ? Colors.green : Colors.red,
-                ),
-              );
-            }).toList(),
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) return CircularProgressIndicator();
+            return ListView(
+              children: snapshot.data!.docs.map((doc) {
+                List tasks = doc['tasks'];
+                Timestamp deliveryDate = doc['deliveryDate'];
+                DateTime date = deliveryDate.toDate();
+                return ExpansionTile(
+                  title: Text("Group: ${doc.id}"),
+                  children: [
+                    ...tasks.map<Widget>((task) {
+                      return ListTile(
+                        title: Text(task),
+                        subtitle: Text("Delivery Date: ${date.toLocal()}"), // Teslim tarihi
+                      );
+                    }).toList(),
+                  ],
+                );
+              }).toList(),
+            );
+          },
+        ),
       ),
     );
   }
