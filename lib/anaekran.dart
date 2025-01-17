@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -8,32 +10,50 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Center(
           child: Text(
-            "WorkAgenda Home",
-            style: TextStyle(
-              fontFamily: 'Lobster',
-              fontSize: 24,
+            "WorkAgenda",
+            style: GoogleFonts.lobster(
+              fontSize: 26,
               color: Colors.white,
             ),
           ),
         ),
-        backgroundColor: Color(0xFF1A237E),
+        backgroundColor: Color(0xFF1A237E), // Lacivert
       ),
       drawer: Drawer(
         child: Column(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFF1A237E)),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                image: DecorationImage(
+                  image: AssetImage('assets/logogibi.png'), // Logo resmini arka plan olarak ekliyoruz
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.3), // Hafif karartma efekti
+                    BlendMode.darken,
+                  ),
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                ),
+              ),
               child: Center(
                 child: Text(
-                  "Admin Menu",
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+                  "Duyurular",
+                  style: TextStyle(
+                    color: Color(0xFF1A237E),
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Lobster',
+                  ),
                 ),
               ),
             ),
             ListTile(
               title: Text(
                 "Duyurular",
-                style: TextStyle(color: Color(0xFF1A237E)),
+                style: TextStyle(color: Color(0xFF1A237E), fontFamily: 'Lobster'),
               ),
               onTap: () {},
             ),
@@ -44,14 +64,40 @@ class HomeScreen extends StatelessWidget {
                   if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
                   return ListView(
                     children: snapshot.data!.docs.map((doc) {
-                      return ListTile(
-                        title: Text("Duyuru: ${doc['duyurular']}"),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Tarih: ${doc['tarih']}"),
-                            Text("Toplantı Notları: ${doc['toplantiNotlari']}"),
-                          ],
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        child: Card(
+                          color: Color(0xFFF5F5F5), // Krem rengi
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.all(16),
+                            title: Text(
+                              "Duyuru: ${doc['duyurular']}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A237E),
+                                fontFamily: 'Lobster',
+                              ),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 8),
+                                Text(
+                                  "Tarih: ${doc['tarih']}",
+                                  style: TextStyle(color: Colors.black54, fontSize: 14, fontFamily: 'Lobster'),
+                                ),
+                                Text(
+                                  "Toplantı Notları: ${doc['toplantiNotlari']}",
+                                  style: TextStyle(color: Colors.black54, fontSize: 14, fontFamily: 'Lobster'),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     }).toList(),
@@ -62,78 +108,101 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-            return ListView(
-              children: snapshot.data!.docs.map((doc) {
-                List tasks = List.from(doc['tasks']);
-                String deliveryDate = doc['deliveryDate']; // Tarih string olarak alınır
+      body: Stack(
+        children: [
+          // Arka plan
+          Positioned.fill(
+            child: Image.asset(
+              'assets/logogibi.png',
+              fit: BoxFit.cover,
+              color: Colors.black.withOpacity(0.3), // Hafif karartma
+              colorBlendMode: BlendMode.darken,
+            ),
+          ),
+          // İçerik
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                return ListView(
+                  children: snapshot.data!.docs.map((doc) {
+                    List tasks = List.from(doc['tasks']);
+                    String deliveryDate = doc['deliveryDate']; // Tarih bilgisi
 
-                return tasks.isEmpty
-                    ? FutureBuilder(
-                        future: FirebaseFirestore.instance.collection('tasks').doc(doc.id).delete(),
-                        builder: (context, snapshot) {
-                          return SizedBox.shrink(); // Grup boşsa görünmez hale gelir
-                        },
-                      )
-                    : Card(
-                        color: Color(0xFFE3F2FD),
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        child: ExpansionTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Grup: ${doc.id}",
-                                style: TextStyle(
-                                  fontFamily: 'Lobster',
-                                  fontSize: 20,
-                                  color: Color(0xFF1A237E),
-                                ),
+                    return tasks.isEmpty
+                        ? FutureBuilder(
+                            future: FirebaseFirestore.instance.collection('tasks').doc(doc.id).delete(),
+                            builder: (context, snapshot) {
+                              return SizedBox.shrink(); // Grup boşsa görünmez
+                            },
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                            child: Card(
+                              color: Color(0xFFF5F5F5), // Krem rengi
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                              SizedBox(height: 5),
-                              Text(
-                                "Teslim Tarihi: $deliveryDate", // String tarih burada gösterilir
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
+                              child: ExpansionTile(
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Grup: ${doc.id}",
+                                      style: TextStyle(
+                                        fontFamily: 'Lobster',
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF1A237E),
+                                      ),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      "Teslim Tarihi: $deliveryDate",
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 14,
+                                        fontFamily: 'Lobster',
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                children: [
+                                  ...tasks.asMap().entries.map<Widget>((entry) {
+                                    int index = entry.key;
+                                    String task = entry.value;
+                                    return ListTile(
+                                      title: Text(
+                                        task,
+                                        style: TextStyle(
+                                          color: Color(0xFF1A237E),
+                                          fontFamily: 'Lobster',
+                                        ),
+                                      ),
+                                      trailing: IconButton(
+                                        icon: Icon(Icons.check, color: Colors.blue),
+                                        onPressed: () {
+                                          tasks.removeAt(index);
+                                          FirebaseFirestore.instance.collection('tasks').doc(doc.id).update({
+                                            'tasks': tasks,
+                                          });
+                                        },
+                                      ),
+                                    );
+                                  }).toList(),
+                                ],
                               ),
-                            ],
-                          ),
-                          children: [
-                            ...tasks.asMap().entries.map<Widget>((entry) {
-                              int index = entry.key;
-                              String task = entry.value;
-                              return ListTile(
-                                title: Text(
-                                  task,
-                                  style: TextStyle(
-                                    color: Color(0xFF1A237E),
-                                  ),
-                                ),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.check, color: Colors.green),
-                                  onPressed: () {
-                                    tasks.removeAt(index);
-                                    FirebaseFirestore.instance.collection('tasks').doc(doc.id).update({
-                                      'tasks': tasks,
-                                    });
-                                  },
-                                ),
-                              );
-                            }).toList(),
-                          ],
-                        ),
-                      );
-              }).toList(),
-            );
-          },
-        ),
+                            ),
+                          );
+                  }).toList(),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
