@@ -18,6 +18,50 @@ class HomeScreen extends StatelessWidget {
         ),
         backgroundColor: Color(0xFF1A237E),
       ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Color(0xFF1A237E)),
+              child: Center(
+                child: Text(
+                  "Admin Menu",
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                "Duyurular",
+                style: TextStyle(color: Color(0xFF1A237E)),
+              ),
+              onTap: () {},
+            ),
+            Expanded(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('notes').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                  return ListView(
+                    children: snapshot.data!.docs.map((doc) {
+                      return ListTile(
+                        title: Text("Duyuru: ${doc['duyurular']}"),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Tarih: ${doc['tarih']}"),
+                            Text("Toplantı Notları: ${doc['toplantiNotlari']}"),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder(
@@ -27,14 +71,13 @@ class HomeScreen extends StatelessWidget {
             return ListView(
               children: snapshot.data!.docs.map((doc) {
                 List tasks = List.from(doc['tasks']);
-                Timestamp deliveryDate = doc['deliveryDate'];
-                DateTime date = deliveryDate.toDate();
+                String deliveryDate = doc['deliveryDate']; // Tarih string olarak alınır
 
                 return tasks.isEmpty
                     ? FutureBuilder(
                         future: FirebaseFirestore.instance.collection('tasks').doc(doc.id).delete(),
                         builder: (context, snapshot) {
-                          return SizedBox.shrink(); // Grup boşsa görünmez hale getir
+                          return SizedBox.shrink(); // Grup boşsa görünmez hale gelir
                         },
                       )
                     : Card(
@@ -54,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                "Delivery Date: ${date.toLocal().toString().split(' ')[0]}",
+                                "Teslim Tarihi: $deliveryDate", // String tarih burada gösterilir
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 14,

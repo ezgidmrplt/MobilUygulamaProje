@@ -1,7 +1,7 @@
-// Admin ekranı
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class AdminScreen extends StatefulWidget {
   @override
@@ -17,6 +17,7 @@ class _AdminScreenState extends State<AdminScreen> {
   final TextEditingController announcementController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  final DateFormat dateFormat = DateFormat('dd.MM.yyyy');
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -25,10 +26,11 @@ class _AdminScreenState extends State<AdminScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
       });
+    }
   }
 
   @override
@@ -85,7 +87,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           ),
                           Row(
                             children: [
-                              Text("Tarih: ${selectedDate.toLocal()}".split(' ')[0]),
+                              Text("Tarih: ${dateFormat.format(selectedDate)}"),
                               IconButton(
                                 icon: Icon(Icons.calendar_today),
                                 onPressed: () => _selectDate(context),
@@ -99,7 +101,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           onPressed: () {
                             FirebaseFirestore.instance.collection('notes').add({
                               'duyurular': announcementController.text,
-                              'tarih': selectedDate,
+                              'tarih': dateFormat.format(selectedDate),
                               'toplantiNotlari': notesController.text,
                             });
                             announcementController.clear();
@@ -193,7 +195,7 @@ class _AdminScreenState extends State<AdminScreen> {
             Row(
               children: [
                 Text(
-                  "Teslim Tarihi: ${selectedDate.toLocal()}".split(' ')[0],
+                  "Teslim Tarihi: ${dateFormat.format(selectedDate)}",
                   style: GoogleFonts.lobster(
                     textStyle: TextStyle(color: Colors.blue.shade900),
                   ),
@@ -217,7 +219,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     .doc(groupNameController.text)
                     .set({
                   'tasks': FieldValue.arrayUnion(taskControllers.map((e) => e.text).toList()),
-                  'deliveryDate': selectedDate,
+                  'deliveryDate': dateFormat.format(selectedDate),
                   'isCompleted': false,
                 }, SetOptions(merge: true));
               },
@@ -237,8 +239,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   return ListView(
                     children: snapshot.data!.docs.map((doc) {
                       List tasks = doc['tasks'];
-                      Timestamp deliveryDate = doc['deliveryDate'];
-                      DateTime date = deliveryDate.toDate();
+                      String deliveryDate = doc['deliveryDate'];
                       return Card(
                         color: Colors.blue.shade100,
                         margin: EdgeInsets.symmetric(vertical: 8),
@@ -276,7 +277,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                   ),
                                 ),
                                 subtitle: Text(
-                                  "Delivery Date: ${date.toLocal()}",
+                                  "Delivery Date: $deliveryDate",
                                   style: TextStyle(color: Colors.black54),
                                 ),
                                 trailing: IconButton(
