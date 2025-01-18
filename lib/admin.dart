@@ -99,7 +99,7 @@ class _AdminPaneliState extends State<AdminEkrani> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            FirebaseFirestore.instance.collection('notlar').add({
+                            FirebaseFirestore.instance.collection('notes').add({
                               'duyurular': duyuruKontrol.text,
                               'tarih': tarihFormat.format(secilenTarih),
                               'toplantiNotlari': notlarKontrol.text,
@@ -124,7 +124,7 @@ class _AdminPaneliState extends State<AdminEkrani> {
             ),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('notlar').snapshots(),
+                stream: FirebaseFirestore.instance.collection('notes').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
                   return ListView(
@@ -142,7 +142,7 @@ class _AdminPaneliState extends State<AdminEkrani> {
                           icon: Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             FirebaseFirestore.instance
-                                .collection('notlar')
+                                .collection('notes')
                                 .doc(doc.id)
                                 .delete();
                           },
@@ -161,13 +161,12 @@ class _AdminPaneliState extends State<AdminEkrani> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // CircleAvatar eklendi
             CircleAvatar(
-              radius: 100, // Avatar boyutunu ayarlayabilirsiniz
-              backgroundImage: AssetImage('assets/admin.png'), // 'admin.png' resminizi buraya ekleyin
+              radius: 100,
+              backgroundImage: AssetImage('assets/admin.png'),
               backgroundColor: Colors.blueAccent,
             ),
-            SizedBox(height: 20), // Avatar ile diğer öğeler arasındaki boşluk
+            SizedBox(height: 20),
             TextField(
               controller: grupIsmiKontrol,
               decoration: InputDecoration(
@@ -221,10 +220,10 @@ class _AdminPaneliState extends State<AdminEkrani> {
                 ),
               ),
               onPressed: () {
-                FirebaseFirestore.instance.collection('gorevler').doc(grupIsmiKontrol.text).set({
-                  'gorevler': FieldValue.arrayUnion(gorevKontrolleri.map((e) => e.text).toList()),
-                  'teslimTarihi': tarihFormat.format(secilenTarih),
-                  'tamamlandi': false,
+                FirebaseFirestore.instance.collection('tasks').doc(grupIsmiKontrol.text).set({
+                  'tasks': FieldValue.arrayUnion(gorevKontrolleri.map((e) => e.text).toList()),
+                  'deliveryDate': tarihFormat.format(secilenTarih),
+                  'completed': false,
                 }, SetOptions(merge: true));
                 grupIsmiKontrol.clear();
                 gorevKontrolleri.forEach((controller) => controller.clear());
@@ -240,13 +239,13 @@ class _AdminPaneliState extends State<AdminEkrani> {
             SizedBox(height: 20),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('gorevler').snapshots(),
+                stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
                   return ListView(
                     children: snapshot.data!.docs.map((doc) {
-                      List gorevler = doc['gorevler'];
-                      String teslimTarihi = doc['teslimTarihi'];
+                      List tasks = List.from(doc['tasks']);
+                      String deliveryDate = doc['deliveryDate'];
                       return Card(
                         color: Colors.blue.shade100,
                         margin: EdgeInsets.symmetric(vertical: 8),
@@ -267,7 +266,7 @@ class _AdminPaneliState extends State<AdminEkrani> {
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
                                   FirebaseFirestore.instance
-                                      .collection('gorevler')
+                                      .collection('tasks')
                                       .doc(doc.id)
                                       .delete();
                                 },
@@ -275,26 +274,26 @@ class _AdminPaneliState extends State<AdminEkrani> {
                             ],
                           ),
                           children: [
-                            ...gorevler.map<Widget>((gorev) {
+                            ...tasks.asMap().entries.map<Widget>((entry) {
+                              int index = entry.key;
+                              String task = entry.value;
                               return ListTile(
                                 title: Text(
-                                  gorev,
+                                  task,
                                   style: GoogleFonts.lobster(
                                     textStyle: TextStyle(color: Colors.blue.shade900),
                                   ),
                                 ),
                                 subtitle: Text(
-                                  "Teslim Tarihi: $teslimTarihi",
+                                  "Teslim Tarihi: $deliveryDate",
                                   style: TextStyle(color: Colors.black54),
                                 ),
                                 trailing: IconButton(
                                   icon: Icon(Icons.delete, color: Colors.red),
                                   onPressed: () {
-                                    FirebaseFirestore.instance
-                                        .collection('gorevler')
-                                        .doc(doc.id)
-                                        .update({
-                                      'gorevler': FieldValue.arrayRemove([gorev]),
+                                    tasks.removeAt(index);
+                                    FirebaseFirestore.instance.collection('tasks').doc(doc.id).update({
+                                      'tasks': tasks,
                                     });
                                   },
                                 ),

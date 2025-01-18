@@ -2,23 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class Anaekran extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "WorkAgenda",
-            style: GoogleFonts.lobster(
-              fontSize: 26,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        backgroundColor: Color(0xFF1A237E), // Lacivert
-      ),
       drawer: Drawer(
         child: Column(
           children: [
@@ -26,10 +13,10 @@ class Anaekran extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 image: DecorationImage(
-                  image: AssetImage('assets/logogibi.png'), // Logo resmini arka plan olarak ekliyoruz
+                  image: AssetImage('assets/logogibi.png'),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.3), // Hafif karartma efekti
+                    Colors.black.withOpacity(0.3),
                     BlendMode.darken,
                   ),
                 ),
@@ -67,7 +54,7 @@ class Anaekran extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                         child: Card(
-                          color: Color(0xFFF5F5F5), // Krem rengi
+                          color: Color(0xFFF5F5F5),
                           elevation: 5,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -110,96 +97,122 @@ class Anaekran extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Arka plan
           Positioned.fill(
             child: Image.asset(
-              'assets/anasayfa.png',
+              'assets/anasayfa3.png',
               fit: BoxFit.cover,
-              color: Colors.black.withOpacity(0.3), // Hafif karartma
-              colorBlendMode: BlendMode.darken,
             ),
           ),
-          // İçerik
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-                return ListView(
-                  children: snapshot.data!.docs.map((doc) {
-                    List tasks = List.from(doc['tasks']);
-                    String deliveryDate = doc['deliveryDate']; // Tarih bilgisi
-
-                    return tasks.isEmpty
-                        ? FutureBuilder(
-                            future: FirebaseFirestore.instance.collection('tasks').doc(doc.id).delete(),
-                            builder: (context, snapshot) {
-                              return SizedBox.shrink(); // Grup boşsa görünmez
-                            },
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                            child: Card(
-                              color: Color(0xFFF5F5F5), // Krem rengi
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: ExpansionTile(
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Grup: ${doc.id}",
-                                      style: TextStyle(
-                                        fontFamily: 'Lobster',
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF1A237E),
-                                      ),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      "Teslim Tarihi: $deliveryDate",
-                                      style: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 14,
-                                        fontFamily: 'Lobster',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                children: [
-                                  ...tasks.asMap().entries.map<Widget>((entry) {
-                                    int index = entry.key;
-                                    String task = entry.value;
-                                    return ListTile(
-                                      title: Text(
-                                        task,
-                                        style: TextStyle(
-                                          color: Color(0xFF1A237E),
-                                          fontFamily: 'Lobster',
-                                        ),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: Icon(Icons.check, color: Colors.blue),
-                                        onPressed: () {
-                                          tasks.removeAt(index);
-                                          FirebaseFirestore.instance.collection('tasks').doc(doc.id).update({
-                                            'tasks': tasks,
-                                          });
-                                        },
-                                      ),
-                                    );
-                                  }).toList(),
-                                ],
-                              ),
-                            ),
-                          );
-                  }).toList(),
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Builder(
+              builder: (BuildContext context) {
+                return IconButton(
+                  icon: Icon(Icons.menu, color: Colors.blueAccent),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
                 );
               },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: 20),
+                  child: Text(
+                    "WorkAgenda",
+                    style: GoogleFonts.lobster(
+                      fontSize: 46,
+                      color: Color(0xFF1A237E)                    ),
+                  ),
+                ),
+                Expanded(
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                      return ListView(
+                        children: snapshot.data!.docs.map((doc) {
+                          List tasks = List.from(doc['tasks']);
+                          String deliveryDate = doc['deliveryDate'];
+
+                          return tasks.isEmpty
+                              ? FutureBuilder(
+                                  future: FirebaseFirestore.instance.collection('tasks').doc(doc.id).delete(),
+                                  builder: (context, snapshot) {
+                                    return SizedBox.shrink();
+                                  },
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                  child: Card(
+                                    color: Color(0xFFF5F5F5),
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: ExpansionTile(
+                                      title: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Grup: ${doc.id}",
+                                            style: TextStyle(
+                                              fontFamily: 'Lobster',
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF1A237E),
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            "Teslim Tarihi: $deliveryDate",
+                                            style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 14,
+                                              fontFamily: 'Lobster',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      children: [
+                                        ...tasks.asMap().entries.map<Widget>((entry) {
+                                          int index = entry.key;
+                                          String task = entry.value;
+                                          return ListTile(
+                                            title: Text(
+                                              task,
+                                              style: TextStyle(
+                                                color: Color(0xFF1A237E),
+                                                fontFamily: 'Lobster',
+                                              ),
+                                            ),
+                                            trailing: IconButton(
+                                              icon: Icon(Icons.check, color: Colors.blue),
+                                              onPressed: () {
+                                                tasks.removeAt(index);
+                                                FirebaseFirestore.instance.collection('tasks').doc(doc.id).update({
+                                                  'tasks': tasks,
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                        }).toList(),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ],
