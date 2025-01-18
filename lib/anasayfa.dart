@@ -4,90 +4,96 @@ import 'package:google_fonts/google_fonts.dart';
 import 'admin.dart'; // Admin ekranı için import.
 import 'anaekran.dart'; // Anaekran dosyasını dahil ediyoruz.
 
+// Giriş ekranını temsil eden sınıf.
 class GirisEkrani extends StatefulWidget {
   @override
-  _GirisEkraniState createState() => _GirisEkraniState();
+  _GirisEkraniDurumu createState() => _GirisEkraniDurumu();
 }
 
-class _GirisEkraniState extends State<GirisEkrani>
+// Giriş ekranının durumu sınıfı.
+class _GirisEkraniDurumu extends State<GirisEkrani>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  // Kullanıcı adı ve şifre için kontrolcüler.
+  final TextEditingController _kullaniciAdiKontrolcu = TextEditingController();
+  final TextEditingController _sifreKontrolcu = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  late AnimationController _animationController;
-  late Animation<Color?> _usernameBackgroundAnimation;
-  late Animation<Color?> _passwordBackgroundAnimation;
-  late FocusNode _usernameFocusNode;
-  late FocusNode _passwordFocusNode;
+  late AnimationController _animasyonKontrolcu;
+  late Animation<Color?> _kullaniciAdiArkaPlanAnimasyonu;
+  late Animation<Color?> _sifreArkaPlanAnimasyonu;
+  late FocusNode _kullaniciAdiOdakNoktasi;
+  late FocusNode _sifreOdakNoktasi;
 
   @override
   void initState() {
     super.initState();
-    _usernameFocusNode = FocusNode();
-    _passwordFocusNode = FocusNode();
+    _kullaniciAdiOdakNoktasi = FocusNode();
+    _sifreOdakNoktasi = FocusNode();
 
-    _animationController = AnimationController(
+    _animasyonKontrolcu = AnimationController(
       duration: Duration(seconds: 1),
       vsync: this,
     );
 
-    _usernameBackgroundAnimation = ColorTween(
+    _kullaniciAdiArkaPlanAnimasyonu = ColorTween(
       begin: Color(0xFFFFEBEE),
       end: Color(0xFFFFCDD2),
-    ).animate(_animationController);
+    ).animate(_animasyonKontrolcu);
 
-    _passwordBackgroundAnimation = ColorTween(
+    _sifreArkaPlanAnimasyonu = ColorTween(
       begin: Color(0xFFFFEBEE),
       end: Color(0xFFFFCDD2),
-    ).animate(_animationController);
+    ).animate(_animasyonKontrolcu);
 
-    _usernameFocusNode.addListener(() {
-      if (_usernameFocusNode.hasFocus) {
-        _animationController.forward();
+    // Kullanıcı adı alanına odaklanıldığında animasyon başlat.
+    _kullaniciAdiOdakNoktasi.addListener(() {
+      if (_kullaniciAdiOdakNoktasi.hasFocus) {
+        _animasyonKontrolcu.forward();
       } else {
-        _animationController.reverse();
+        _animasyonKontrolcu.reverse();
       }
     });
 
-    _passwordFocusNode.addListener(() {
-      if (_passwordFocusNode.hasFocus) {
-        _animationController.forward();
+    // Şifre alanına odaklanıldığında animasyon başlat.
+    _sifreOdakNoktasi.addListener(() {
+      if (_sifreOdakNoktasi.hasFocus) {
+        _animasyonKontrolcu.forward();
       } else {
-        _animationController.reverse();
+        _animasyonKontrolcu.reverse();
       }
     });
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _animationController.dispose();
-    _usernameFocusNode.dispose();
-    _passwordFocusNode.dispose();
+    _kullaniciAdiKontrolcu.dispose();
+    _sifreKontrolcu.dispose();
+    _animasyonKontrolcu.dispose();
+    _kullaniciAdiOdakNoktasi.dispose();
+    _sifreOdakNoktasi.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
+  // Kullanıcı giriş işlemi.
+  Future<void> _girisYap() async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _usernameController.text.trim(),
-        password: _passwordController.text.trim(),
+      UserCredential kullaniciBilgisi = await _auth.signInWithEmailAndPassword(
+        email: _kullaniciAdiKontrolcu.text.trim(),
+        password: _sifreKontrolcu.text.trim(),
       );
-      if (userCredential.user != null) {
-        // Eğer admin ise admin ekranına yönlendir.
-        if (userCredential.user!.email == "admin@gmail.com") {
+      if (kullaniciBilgisi.user != null) {
+        // Eğer yönetici ise yönetici ekranına yönlendir.
+        if (kullaniciBilgisi.user!.email == "admin@gmail.com") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => AdminScreen()),
+            MaterialPageRoute(builder: (context) => AdminEkrani()),
           );
         } else {
           // Diğer kullanıcılar için ana ekrana yönlendir.
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => Anaekran()),
           );
         }
       }
@@ -150,19 +156,19 @@ class _GirisEkraniState extends State<GirisEkrani>
                   ),
                   SizedBox(height: 30),
                   AnimatedBuilder(
-                    animation: _usernameBackgroundAnimation,
+                    animation: _kullaniciAdiArkaPlanAnimasyonu,
                     builder: (context, child) {
                       return TextField(
-                        focusNode: _usernameFocusNode,
-                        controller: _usernameController,
+                        focusNode: _kullaniciAdiOdakNoktasi,
+                        controller: _kullaniciAdiKontrolcu,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: _usernameBackgroundAnimation.value,
+                          fillColor: _kullaniciAdiArkaPlanAnimasyonu.value,
                           labelText: 'Kullanıcı Adı',
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                                color: _usernameBackgroundAnimation.value!,
+                                color: _kullaniciAdiArkaPlanAnimasyonu.value!,
                                 width: 2.0),
                           ),
                           enabledBorder: OutlineInputBorder(
@@ -175,20 +181,20 @@ class _GirisEkraniState extends State<GirisEkrani>
                   ),
                   SizedBox(height: 8),
                   AnimatedBuilder(
-                    animation: _passwordBackgroundAnimation,
+                    animation: _sifreArkaPlanAnimasyonu,
                     builder: (context, child) {
                       return TextField(
-                        focusNode: _passwordFocusNode,
-                        controller: _passwordController,
+                        focusNode: _sifreOdakNoktasi,
+                        controller: _sifreKontrolcu,
                         obscureText: true,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: _passwordBackgroundAnimation.value,
+                          fillColor: _sifreArkaPlanAnimasyonu.value,
                           labelText: 'Şifre',
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                                color: _passwordBackgroundAnimation.value!,
+                                color: _sifreArkaPlanAnimasyonu.value!,
                                 width: 2.0),
                           ),
                           enabledBorder: OutlineInputBorder(
@@ -201,7 +207,7 @@ class _GirisEkraniState extends State<GirisEkrani>
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: _login,
+                    onPressed: _girisYap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFCDD2),
                       padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),

@@ -3,32 +3,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-class AdminScreen extends StatefulWidget {
+class AdminEkrani extends StatefulWidget {
   @override
-  _AdminScreenState createState() => _AdminScreenState();
+  _AdminPaneliState createState() => _AdminPaneliState();
 }
 
-class _AdminScreenState extends State<AdminScreen> {
-  final TextEditingController groupNameController = TextEditingController();
-  final List<TextEditingController> taskControllers = List.generate(
+class _AdminPaneliState extends State<AdminEkrani> {
+  final TextEditingController grupIsmiKontrol = TextEditingController();
+  final List<TextEditingController> gorevKontrolleri = List.generate(
     3,
     (index) => TextEditingController(),
   );
-  final TextEditingController announcementController = TextEditingController();
-  final TextEditingController notesController = TextEditingController();
-  DateTime selectedDate = DateTime.now();
-  final DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+  final TextEditingController duyuruKontrol = TextEditingController();
+  final TextEditingController notlarKontrol = TextEditingController();
+  DateTime secilenTarih = DateTime.now();
+  final DateFormat tarihFormat = DateFormat('dd.MM.yyyy');
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  Future<void> _tarihSec(BuildContext context) async {
+    final DateTime? secilen = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: secilenTarih,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != selectedDate) {
+    if (secilen != null && secilen != secilenTarih) {
       setState(() {
-        selectedDate = picked;
+        secilenTarih = secilen;
       });
     }
   }
@@ -39,7 +39,7 @@ class _AdminScreenState extends State<AdminScreen> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            "WorkAgenda Admin Panel",
+            "WorkAgenda Yönetici Paneli",
             style: GoogleFonts.lobster(
               textStyle: TextStyle(fontSize: 24, color: Colors.white),
             ),
@@ -54,7 +54,7 @@ class _AdminScreenState extends State<AdminScreen> {
               decoration: BoxDecoration(color: Colors.blue.shade900),
               child: Center(
                 child: Text(
-                  "Admin Menu",
+                  "Yönetici Menüsü",
                   style: GoogleFonts.lobster(
                     textStyle: TextStyle(color: Colors.white, fontSize: 24),
                   ),
@@ -78,19 +78,19 @@ class _AdminScreenState extends State<AdminScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextField(
-                            controller: announcementController,
+                            controller: duyuruKontrol,
                             decoration: InputDecoration(labelText: "Duyuru"),
                           ),
                           TextField(
-                            controller: notesController,
+                            controller: notlarKontrol,
                             decoration: InputDecoration(labelText: "Toplantı Notları"),
                           ),
                           Row(
                             children: [
-                              Text("Tarih: ${dateFormat.format(selectedDate)}"),
+                              Text("Tarih: ${tarihFormat.format(secilenTarih)}"),
                               IconButton(
                                 icon: Icon(Icons.calendar_today),
-                                onPressed: () => _selectDate(context),
+                                onPressed: () => _tarihSec(context),
                               ),
                             ],
                           ),
@@ -99,13 +99,13 @@ class _AdminScreenState extends State<AdminScreen> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            FirebaseFirestore.instance.collection('notes').add({
-                              'duyurular': announcementController.text,
-                              'tarih': dateFormat.format(selectedDate),
-                              'toplantiNotlari': notesController.text,
+                            FirebaseFirestore.instance.collection('notlar').add({
+                              'duyurular': duyuruKontrol.text,
+                              'tarih': tarihFormat.format(secilenTarih),
+                              'toplantiNotlari': notlarKontrol.text,
                             });
-                            announcementController.clear();
-                            notesController.clear();
+                            duyuruKontrol.clear();
+                            notlarKontrol.clear();
                             Navigator.of(context).pop();
                           },
                           child: Text("Ekle"),
@@ -124,7 +124,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('notes').snapshots(),
+                stream: FirebaseFirestore.instance.collection('notlar').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
                   return ListView(
@@ -142,7 +142,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           icon: Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             FirebaseFirestore.instance
-                                .collection('notes')
+                                .collection('notlar')
                                 .doc(doc.id)
                                 .delete();
                           },
@@ -162,7 +162,7 @@ class _AdminScreenState extends State<AdminScreen> {
         child: Column(
           children: [
             TextField(
-              controller: groupNameController,
+              controller: grupIsmiKontrol,
               decoration: InputDecoration(
                 labelText: "Grup İsmi",
                 labelStyle: GoogleFonts.lobster(
@@ -175,11 +175,11 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
             ),
             SizedBox(height: 10),
-            for (int i = 0; i < taskControllers.length; i++)
+            for (int i = 0; i < gorevKontrolleri.length; i++)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: TextField(
-                  controller: taskControllers[i],
+                  controller: gorevKontrolleri[i],
                   decoration: InputDecoration(
                     labelText: "Görev ${i + 1}",
                     labelStyle: GoogleFonts.lobster(
@@ -195,14 +195,14 @@ class _AdminScreenState extends State<AdminScreen> {
             Row(
               children: [
                 Text(
-                  "Teslim Tarihi: ${dateFormat.format(selectedDate)}",
+                  "Teslim Tarihi: ${tarihFormat.format(secilenTarih)}",
                   style: GoogleFonts.lobster(
                     textStyle: TextStyle(color: Colors.blue.shade900),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.calendar_today, color: Colors.blue.shade900),
-                  onPressed: () => _selectDate(context),
+                  onPressed: () => _tarihSec(context),
                 ),
               ],
             ),
@@ -214,14 +214,14 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
               ),
               onPressed: () {
-                FirebaseFirestore.instance
-                    .collection('tasks')
-                    .doc(groupNameController.text)
-                    .set({
-                  'tasks': FieldValue.arrayUnion(taskControllers.map((e) => e.text).toList()),
-                  'deliveryDate': dateFormat.format(selectedDate),
-                  'isCompleted': false,
+                FirebaseFirestore.instance.collection('gorevler').doc(grupIsmiKontrol.text).set({
+                  'gorevler': FieldValue.arrayUnion(gorevKontrolleri.map((e) => e.text).toList()),
+                  'teslimTarihi': tarihFormat.format(secilenTarih),
+                  'tamamlandi': false,
                 }, SetOptions(merge: true));
+                grupIsmiKontrol.clear();
+                gorevKontrolleri.forEach((controller) => controller.clear());
+                setState(() {});
               },
               child: Text(
                 "Grup Görev Oluştur",
@@ -233,13 +233,13 @@ class _AdminScreenState extends State<AdminScreen> {
             SizedBox(height: 20),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
+                stream: FirebaseFirestore.instance.collection('gorevler').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
                   return ListView(
                     children: snapshot.data!.docs.map((doc) {
-                      List tasks = doc['tasks'];
-                      String deliveryDate = doc['deliveryDate'];
+                      List gorevler = doc['gorevler'];
+                      String teslimTarihi = doc['teslimTarihi'];
                       return Card(
                         color: Colors.blue.shade100,
                         margin: EdgeInsets.symmetric(vertical: 8),
@@ -260,7 +260,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
                                   FirebaseFirestore.instance
-                                      .collection('tasks')
+                                      .collection('gorevler')
                                       .doc(doc.id)
                                       .delete();
                                 },
@@ -268,26 +268,26 @@ class _AdminScreenState extends State<AdminScreen> {
                             ],
                           ),
                           children: [
-                            ...tasks.map<Widget>((task) {
+                            ...gorevler.map<Widget>((gorev) {
                               return ListTile(
                                 title: Text(
-                                  task,
+                                  gorev,
                                   style: GoogleFonts.lobster(
                                     textStyle: TextStyle(color: Colors.blue.shade900),
                                   ),
                                 ),
                                 subtitle: Text(
-                                  "Delivery Date: $deliveryDate",
+                                  "Teslim Tarihi: $teslimTarihi",
                                   style: TextStyle(color: Colors.black54),
                                 ),
                                 trailing: IconButton(
                                   icon: Icon(Icons.delete, color: Colors.red),
                                   onPressed: () {
                                     FirebaseFirestore.instance
-                                        .collection('tasks')
+                                        .collection('gorevler')
                                         .doc(doc.id)
                                         .update({
-                                      'tasks': FieldValue.arrayRemove([task]),
+                                      'gorevler': FieldValue.arrayRemove([gorev]),
                                     });
                                   },
                                 ),
