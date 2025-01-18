@@ -39,7 +39,7 @@ class _AdminPaneliState extends State<AdminEkrani> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            "WorkAgenda Yönetici Paneli",
+            "Admin Yönetici Paneli",
             style: GoogleFonts.lobster(
               textStyle: TextStyle(fontSize: 24, color: Colors.white),
             ),
@@ -161,6 +161,13 @@ class _AdminPaneliState extends State<AdminEkrani> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // CircleAvatar eklendi
+            CircleAvatar(
+              radius: 100, // Avatar boyutunu ayarlayabilirsiniz
+              backgroundImage: AssetImage('assets/admin.png'), // 'admin.png' resminizi buraya ekleyin
+              backgroundColor: Colors.blueAccent,
+            ),
+            SizedBox(height: 20), // Avatar ile diğer öğeler arasındaki boşluk
             TextField(
               controller: grupIsmiKontrol,
               decoration: InputDecoration(

@@ -75,6 +75,8 @@ flutter:
     - assets/loginscreen.png
     - assets/gorsel.png
     - assets/logogibi.png
+    - assets/anasayfa.png
+    - assets/admin.png
     #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

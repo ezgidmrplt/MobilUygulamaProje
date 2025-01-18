@@ -113,7 +113,7 @@ class Anaekran extends StatelessWidget {
           // Arka plan
           Positioned.fill(
             child: Image.asset(
-              'assets/logogibi.png',
+              'assets/anasayfa.png',
               fit: BoxFit.cover,
               color: Colors.black.withOpacity(0.3), // Hafif karartma
               colorBlendMode: BlendMode.darken,
