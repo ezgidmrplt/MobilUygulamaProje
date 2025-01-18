@@ -1,10 +1,8 @@
 plugins {
     id "com.android.application"
-    // START: FlutterFire Configuration
-    id 'com.google.gms.google-services' // Firebase için Google Services plugin'i
-    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services" // Firebase için Google Services plugin'i
 }
 
 def localProperties = new Properties()
@@ -46,8 +44,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.mobil_proje_1"
-        // minSdkVersion'ı 23 olarak değiştiriyoruz
-        minSdkVersion 23
+        minSdkVersion 23 // minSdkVersion'ı 23 olarak değiştiriyoruz
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -59,7 +56,6 @@ android {
         }
     }
 
-    // Firebase ve Google Services plugin'i doğru yapılandırmak için:
     buildFeatures {
         viewBinding true
     }
@@ -70,10 +66,7 @@ flutter {
 }
 
 dependencies {
-    // Firebase bağımlılıklarını buraya ekleyin
-    implementation 'com.google.firebase:firebase-analytics:21.2.0' // Firebase Analytics için örnek bağımlılık
-    implementation 'com.google.firebase:firebase-auth:21.2.0' // Firebase Auth için bağımlılık ekleyin
-    implementation 'com.google.firebase:firebase-core:21.1.0' // Firebase Core için bağımlılık ekleyin
+    implementation 'com.google.firebase:firebase-analytics:21.2.0' // Firebase Analytics için bağımlılık
+    implementation 'com.google.firebase:firebase-auth:21.2.0' // Firebase Auth için bağımlılık
+    implementation 'com.google.firebase:firebase-core:21.1.0' // Firebase Core için bağımlılık
 }
-
-apply plugin: 'com.google.gms.google-services'  // Firebase Google Services plugin'i

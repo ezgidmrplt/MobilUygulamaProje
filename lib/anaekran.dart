@@ -13,7 +13,7 @@ class Anaekran extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 image: DecorationImage(
-                  image: AssetImage('assets/logogibi.png'),
+                  image: AssetImage('assets/duyurularr.png'),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.3),
@@ -28,11 +28,10 @@ class Anaekran extends StatelessWidget {
               child: Center(
                 child: Text(
                   "Duyurular",
-                  style: TextStyle(
-                    color: Color(0xFF1A237E),
+                  style: GoogleFonts.lobster(
+                    color: Color.fromARGB(255, 255, 255, 255),
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Lobster',
                   ),
                 ),
               ),
@@ -40,19 +39,24 @@ class Anaekran extends StatelessWidget {
             ListTile(
               title: Text(
                 "Duyurular",
-                style: TextStyle(color: Color(0xFF1A237E), fontFamily: 'Lobster'),
+                style: GoogleFonts.lobster(
+                  color: Color(0xFF1A237E),
+                ),
               ),
               onTap: () {},
             ),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('notes').snapshots(),
+                stream:
+                    FirebaseFirestore.instance.collection('notes').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                  if (!snapshot.hasData)
+                    return Center(child: CircularProgressIndicator());
                   return ListView(
                     children: snapshot.data!.docs.map((doc) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
                         child: Card(
                           color: Color(0xFFF5F5F5),
                           elevation: 5,
@@ -63,11 +67,10 @@ class Anaekran extends StatelessWidget {
                             contentPadding: EdgeInsets.all(16),
                             title: Text(
                               "Duyuru: ${doc['duyurular']}",
-                              style: TextStyle(
+                              style: GoogleFonts.lobster(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF1A237E),
-                                fontFamily: 'Lobster',
                               ),
                             ),
                             subtitle: Column(
@@ -76,11 +79,17 @@ class Anaekran extends StatelessWidget {
                                 SizedBox(height: 8),
                                 Text(
                                   "Tarih: ${doc['tarih']}",
-                                  style: TextStyle(color: Colors.black54, fontSize: 14, fontFamily: 'Lobster'),
+                                  style: GoogleFonts.lobster(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                  ),
                                 ),
                                 Text(
                                   "Toplantı Notları: ${doc['toplantiNotlari']}",
-                                  style: TextStyle(color: Colors.black54, fontSize: 14, fontFamily: 'Lobster'),
+                                  style: GoogleFonts.lobster(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ],
                             ),
@@ -127,15 +136,17 @@ class Anaekran extends StatelessWidget {
                   child: Text(
                     "WorkAgenda",
                     style: GoogleFonts.lobster(
-                      fontSize: 46,
-                      color: Color(0xFF1A237E)                    ),
+                        fontSize: 46, color: Color(0xFF1A237E)),
                   ),
                 ),
                 Expanded(
                   child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
+                    stream: FirebaseFirestore.instance
+                        .collection('tasks')
+                        .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                      if (!snapshot.hasData)
+                        return Center(child: CircularProgressIndicator());
                       return ListView(
                         children: snapshot.data!.docs.map((doc) {
                           List tasks = List.from(doc['tasks']);
@@ -143,13 +154,17 @@ class Anaekran extends StatelessWidget {
 
                           return tasks.isEmpty
                               ? FutureBuilder(
-                                  future: FirebaseFirestore.instance.collection('tasks').doc(doc.id).delete(),
+                                  future: FirebaseFirestore.instance
+                                      .collection('tasks')
+                                      .doc(doc.id)
+                                      .delete(),
                                   builder: (context, snapshot) {
                                     return SizedBox.shrink();
                                   },
                                 )
                               : Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8.0, horizontal: 16.0),
                                   child: Card(
                                     color: Color(0xFFF5F5F5),
                                     elevation: 5,
@@ -158,12 +173,12 @@ class Anaekran extends StatelessWidget {
                                     ),
                                     child: ExpansionTile(
                                       title: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Grup: ${doc.id}",
-                                            style: TextStyle(
-                                              fontFamily: 'Lobster',
+                                            style: GoogleFonts.lobster(
                                               fontSize: 22,
                                               fontWeight: FontWeight.bold,
                                               color: Color(0xFF1A237E),
@@ -172,31 +187,36 @@ class Anaekran extends StatelessWidget {
                                           SizedBox(height: 5),
                                           Text(
                                             "Teslim Tarihi: $deliveryDate",
-                                            style: TextStyle(
+                                            style: GoogleFonts.lobster(
                                               color: Colors.black54,
                                               fontSize: 14,
-                                              fontFamily: 'Lobster',
                                             ),
                                           ),
                                         ],
                                       ),
                                       children: [
-                                        ...tasks.asMap().entries.map<Widget>((entry) {
+                                        ...tasks
+                                            .asMap()
+                                            .entries
+                                            .map<Widget>((entry) {
                                           int index = entry.key;
                                           String task = entry.value;
                                           return ListTile(
                                             title: Text(
                                               task,
-                                              style: TextStyle(
+                                              style: GoogleFonts.lobster(
                                                 color: Color(0xFF1A237E),
-                                                fontFamily: 'Lobster',
                                               ),
                                             ),
                                             trailing: IconButton(
-                                              icon: Icon(Icons.check, color: Colors.blue),
+                                              icon: Icon(Icons.check,
+                                                  color: Colors.blue),
                                               onPressed: () {
                                                 tasks.removeAt(index);
-                                                FirebaseFirestore.instance.collection('tasks').doc(doc.id).update({
+                                                FirebaseFirestore.instance
+                                                    .collection('tasks')
+                                                    .doc(doc.id)
+                                                    .update({
                                                   'tasks': tasks,
                                                 });
                                               },

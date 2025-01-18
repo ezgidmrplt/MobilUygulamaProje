@@ -99,7 +99,7 @@ class _GirisEkraniDurumu extends State<GirisEkrani>
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Kullanıcı adı veya şifre hatalı!')),
+        SnackBar(content: Text('Kullanıcı adı veya şifre hatalı!', style: GoogleFonts.lobster())),
       );
     }
   }
@@ -165,6 +165,7 @@ class _GirisEkraniDurumu extends State<GirisEkrani>
                           filled: true,
                           fillColor: _kullaniciAdiArkaPlanAnimasyonu.value,
                           labelText: 'Kullanıcı Adı',
+                          labelStyle: GoogleFonts.lobster(),
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -191,6 +192,7 @@ class _GirisEkraniDurumu extends State<GirisEkrani>
                           filled: true,
                           fillColor: _sifreArkaPlanAnimasyonu.value,
                           labelText: 'Şifre',
+                          labelStyle: GoogleFonts.lobster(),
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -218,10 +220,12 @@ class _GirisEkraniDurumu extends State<GirisEkrani>
                     ),
                     child: Text(
                       'Giriş Yap',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                      style: GoogleFonts.lobster(
+                        textStyle: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

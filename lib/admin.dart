@@ -73,21 +73,33 @@ class _AdminPaneliState extends State<AdminEkrani> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text("Yeni Duyuru Ekle"),
+                      title: Text(
+                        "Yeni Duyuru Ekle",
+                        style: GoogleFonts.lobster(),
+                      ),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextField(
                             controller: duyuruKontrol,
-                            decoration: InputDecoration(labelText: "Duyuru"),
+                            decoration: InputDecoration(
+                              labelText: "Duyuru",
+                              labelStyle: GoogleFonts.lobster(),
+                            ),
                           ),
                           TextField(
                             controller: notlarKontrol,
-                            decoration: InputDecoration(labelText: "Toplantı Notları"),
+                            decoration: InputDecoration(
+                              labelText: "Toplantı Notları",
+                              labelStyle: GoogleFonts.lobster(),
+                            ),
                           ),
                           Row(
                             children: [
-                              Text("Tarih: ${tarihFormat.format(secilenTarih)}"),
+                              Text(
+                                "Tarih: ${tarihFormat.format(secilenTarih)}",
+                                style: GoogleFonts.lobster(),
+                              ),
                               IconButton(
                                 icon: Icon(Icons.calendar_today),
                                 onPressed: () => _tarihSec(context),
@@ -108,13 +120,19 @@ class _AdminPaneliState extends State<AdminEkrani> {
                             notlarKontrol.clear();
                             Navigator.of(context).pop();
                           },
-                          child: Text("Ekle"),
+                          child: Text(
+                            "Ekle",
+                            style: GoogleFonts.lobster(),
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("İptal"),
+                          child: Text(
+                            "İptal",
+                            style: GoogleFonts.lobster(),
+                          ),
                         ),
                       ],
                     );
@@ -130,12 +148,21 @@ class _AdminPaneliState extends State<AdminEkrani> {
                   return ListView(
                     children: snapshot.data!.docs.map((doc) {
                       return ListTile(
-                        title: Text("Duyuru: ${doc['duyurular']}"),
+                        title: Text(
+                          "Duyuru: ${doc['duyurular']}",
+                          style: GoogleFonts.lobster(),
+                        ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Tarih: ${doc['tarih']}"),
-                            Text("Toplantı Notları: ${doc['toplantiNotlari']}"),
+                            Text(
+                              "Tarih: ${doc['tarih']}",
+                              style: GoogleFonts.lobster(),
+                            ),
+                            Text(
+                              "Toplantı Notları: ${doc['toplantiNotlari']}",
+                              style: GoogleFonts.lobster(),
+                            ),
                           ],
                         ),
                         trailing: IconButton(
@@ -286,7 +313,9 @@ class _AdminPaneliState extends State<AdminEkrani> {
                                 ),
                                 subtitle: Text(
                                   "Teslim Tarihi: $deliveryDate",
-                                  style: TextStyle(color: Colors.black54),
+                                  style: GoogleFonts.lobster(
+                                    textStyle: TextStyle(color: Colors.black54),
+                                  ),
                                 ),
                                 trailing: IconButton(
                                   icon: Icon(Icons.delete, color: Colors.red),
