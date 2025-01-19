@@ -38,12 +38,14 @@ class _GirisEkraniDurumu extends State<GirisEkrani>
 
     _kullaniciAdiArkaPlanAnimasyonu = ColorTween(
       begin: Color(0xFFFFEBEE),
-      end: Color(0xFFFFCDD2),
+      end: Color.fromARGB(168, 202, 199, 250),
+
     ).animate(_animasyonKontrolcu);
 
     _sifreArkaPlanAnimasyonu = ColorTween(
       begin: Color(0xFFFFEBEE),
-      end: Color(0xFFFFCDD2),
+      end:  Color.fromARGB(168, 202, 199, 250),
+
     ).animate(_animasyonKontrolcu);
 
     // Kullanıcı adı alanına odaklanıldığında animasyon başlat.
@@ -117,7 +119,7 @@ class _GirisEkraniDurumu extends State<GirisEkrani>
           ),
           Positioned.fill(
             child: Container(
-              color: Color(0xA8FFCDD2),
+              color: Color.fromARGB(168, 202, 199, 250),
             ),
           ),
           Center(
@@ -211,8 +213,8 @@ class _GirisEkraniDurumu extends State<GirisEkrani>
                   ElevatedButton(
                     onPressed: _girisYap,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFFCDD2),
-                      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                        backgroundColor: Color.fromARGB(168, 202, 199, 250),
+                        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
