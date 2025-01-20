@@ -67,6 +67,7 @@ WorkAgenda, şirketlerin yönetim süreçlerini kolaylaştırmayı hedefler. Şi
 ![workagenda7](https://github.com/user-attachments/assets/6f01d5f0-86df-4827-8853-48ed528e060d)
 ![workagenda8](https://github.com/user-attachments/assets/97c74f0e-3c4e-4b29-909d-207d146bbd91)
 
+https://youtu.be/GKxFSjjSExs
 
 
 
