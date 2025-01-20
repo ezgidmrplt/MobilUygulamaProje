@@ -53,5 +53,12 @@ WorkAgenda, şirketlerin yönetim süreçlerini kolaylaştırmayı hedefler. Şi
 - Çalışanların yorum veya geri bildirim ekleyebileceği bir bölüm.
 - Bildirim sistemi entegrasyonu.
 
+- ## Ödevi Yapanlar
+- Ezgi Nur DEMİRPOLAT
+- Zeynep ERİŞ
+
+- 
+
+
 
 
