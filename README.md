@@ -57,8 +57,15 @@ WorkAgenda, şirketlerin yönetim süreçlerini kolaylaştırmayı hedefler. Şi
 - Ezgi Nur DEMİRPOLAT
 - Zeynep ERİŞ
 
-- 
+  
 
-
+![workagenda4](https://github.com/user-attachments/assets/2b35fdf8-24d2-4897-9252-56a9db26cdda)
+![workagenda3](https://github.com/user-attachments/assets/c48d3ee4-f385-4615-82f3-3bd9d8d330e9)
+![workagenda2](https://github.com/user-attachments/assets/ae8d044e-4f9d-4314-98a5-129faf460091)
+![workagenda1](https://github.com/user-attachments/assets/e6256e30-b022-42ab-b21e-6f7604ee948b)
+![workagenda8](https://github.com/user-attachments/assets/97c74f0e-3c4e-4b29-909d-207d146bbd91)
+![workagenda7](https://github.com/user-attachments/assets/6f01d5f0-86df-4827-8853-48ed528e060d)
+![workagenda6](https://github.com/user-attachments/assets/80e551ad-a09f-49ba-ac2e-ea0465379144)
+![workagenda5](https://github.com/user-attachments/assets/b0e37260-aad1-4c02-b581-088fcb7554fe)
 
 
